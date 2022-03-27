@@ -19,8 +19,8 @@ with open(location, "r") as csv_file:
     csv_reader = csv.reader(csv_file)
     next(csv_reader)
 
-    with open("learn data.csv", "w", newline="") as csv_learn_file:
-        with open("test data.csv", "w", newline="") as csv_test_file:
+    with open("data/learn data.csv", "w", newline="") as csv_learn_file:
+        with open("data/test data.csv", "w", newline="") as csv_test_file:
             csv_learn_writer = csv.writer(csv_learn_file)
             csv_test_writer = csv.writer(csv_test_file)
             
@@ -28,21 +28,37 @@ with open(location, "r") as csv_file:
             test_file_counter = 0
 
             for line in csv_reader:
-                # clean data #
-                line = line[1:]
-                line[0] = 1 if line[0] == "Female" else 2
-                #  #
+                
+                new_line = []
+                new_line.append(line[1])
+                new_line.append(1 if line[2] == "Yes" else 0)
+                new_line.append(1 if line[3] == "Yes" else 0)
+                new_line.append(1 if line[4] == "Yes" else 0)
+                new_line.append(line[5])
+                new_line.append(line[6])
+                new_line.append(1 if line[7] == "Yes" else 0)
+                new_line.append(1 if line[8] == "Male" else 2)
+                new_line.append(80 if line[9].__contains__("or older") else sum([ int(value) for value in line[9].split("-") ]) / 2)
+                new_line.append(1 if line[11].__contains__("Yes") else 0)
+                new_line.append(1 if line[12] == "Yes" else 0)
+                new_line.append(line[14])
+                new_line.append(1 if line[15] == "Yes" else 0)
+                new_line.append(1 if line[16] == "Yes" else 0)
+                new_line.append(1 if line[17] == "Yes" else 0)
+                new_line.append(1 if line[0] == "Yes" else 0)
+                
+                
                 
                 if learn_file_counter >= data_length * learn_file_size / 100:
-                    csv_test_writer.writerow(line)
+                    csv_test_writer.writerow(new_line)
                 elif test_file_counter >= data_length * (100 - learn_file_size) / 100:
-                    csv_learn_writer.writerow(line)
+                    csv_learn_writer.writerow(new_line)
                 else:
                     if random() <= learn_file_size / 100:
-                        csv_learn_writer.writerow(line)
+                        csv_learn_writer.writerow(new_line)
                         learn_file_counter += 1
                     else:
-                        csv_test_writer.writerow(line)
+                        csv_test_writer.writerow(new_line)
                         test_file_counter += 1
                         
                         
