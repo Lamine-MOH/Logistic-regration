@@ -100,8 +100,8 @@ class Logistic:
 
         return result
     
-    def save_progress(self, location="data/learned module.json", iteration=""):
-        print("module information Saved " + ("" if iteration=="" else f", iteration: {str(iteration)}"))
+    def save_progress(self, location="data/learned module.json", iteration="", J=""):
+        print("module information Saved " + ("" if iteration=="" else f", iteration: {str(iteration)}") + ",  J value: " + J)
         
         thetas_value = []
         for theta in self.thetas:
@@ -119,7 +119,8 @@ class Logistic:
             "mixing": self.mixing,
             "regularized": self.regularized,
             "alpha": self.alpha,
-            "landau": self.landau
+            "landau": self.landau,
+            "J": J
         }
 
         with open(location, "w") as f:
@@ -129,14 +130,16 @@ class Logistic:
     def gradient_descent(self, inputs, outputs, iterations_num=1000, saving_rate=200):
         for iteration in range(iterations_num):
             
-            self.thetas[0] -= self.alpha * self.J(inputs, outputs)
+            J_value = self.J(inputs, outputs)
+            self.thetas[0] -= self.alpha * J_value
+            
             for theta_index, format in zip(range(1, self.thetas_num), self.mixing_formats):
                 self.thetas[theta_index] -= self.alpha * self.J(inputs, outputs, format, self.landau) 
 
             if iteration % saving_rate == 0:
-                self.save_progress(iteration=iteration)
+                self.save_progress(iteration=iteration, J=J_value)
                 
-        self.save_progress(iteration=iteration)
+        self.save_progress(iteration=iteration, J=J_value)
                  
     #
     def test(self, inputs, outputs):
