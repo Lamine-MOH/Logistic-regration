@@ -16,9 +16,9 @@ class Logistic:
         else:
             self.mixing_formats = ""
             for i in range(1, hypo_level+1):
-                self. mixing_formats += self.get_possible_mixing_formats(fet_num, i)
+                self.mixing_formats += self.get_possible_mixing_formats(fet_num, i)
 
-            self.mixing_formats = self.mixing_formats[:-1].split("\n")
+            self.mixing_formats = np.array(self.mixing_formats[:-1].split("\n"))
             self.thetas_num = len(self.mixing_formats) + 1 
 
         # create the thetas with random values #
@@ -30,14 +30,14 @@ class Logistic:
             information = json.load(f)
 
             self.thetas =       information["thetas"]
-            self.mixing_formats=information["mixing_formats"]
+            self.mixing_formats=np.array(information["mixing_formats"])
             self.fet_num =      int(information["fet_num"])
             self.hypo_level =   int(information["hypo_level"])
             self.mixing =       bool(information["mixing"])
             self.regularized =  bool(information["regularized"])
             self.alpha =        int(information["alpha"])
             self.landau =       int(information["landau"])
-            self.thetas_num = len(self.thetas)
+            self.thetas_num =   len(self.thetas)
             
             # numerate the thetas #
             for i in range(len(self.thetas)):
@@ -107,9 +107,13 @@ class Logistic:
         for theta in self.thetas:
             thetas_value.append(int(theta))
         
+        mixing_formats_value = []
+        for formate in self.mixing_formats:
+            mixing_formats_value.append(str(formate))
+        
         information = {
             "thetas": thetas_value,
-            "mixing_formats": self.mixing_formats,
+            "mixing_formats": mixing_formats_value,
             "fet_num": self.fet_num,
             "hypo_level": self.hypo_level,
             "mixing": self.mixing,

@@ -82,8 +82,6 @@ elif sys.argv[1] == "contune":
     module = lr.Logistic()
     module.load_module(module_location)
     
-    print(module.thetas)
-    
     data_location = sys.argv[3]
     inputs, outputs = get_data(data_location)
     
