@@ -13,10 +13,10 @@ def get_data(location):
 
         for line in csv_reader:
             for i in range(len(line)):
-                line[i] = int(line[i])
+                line[i] = float(line[i])
             
             inputs.append(line[0 : len(line)-1])
-            outputs.append(int(line[len(line)-1]))
+            outputs.append(float(line[len(line)-1]))
 
     inputs = np.array(inputs)
     outputs = np.array(outputs)
