@@ -26,10 +26,8 @@ def get_data(location):
 ####################### create model ####################### 
 
 if sys.argv[1] == "new":
-# if True:
     
     data_location = sys.argv[2]
-    # data_location = "data/learn data.csv"
     inputs, outputs = get_data(data_location)
     
     hypo_level = 3
@@ -45,10 +43,10 @@ if sys.argv[1] == "new":
             hypo_level = int(arg.replace("hypo_level=", ""))
 
         elif arg.__contains__("alpha="):
-            alpha = int(arg.replace("alpha=", ""))
+            alpha = float(arg.replace("alpha=", ""))
 
         elif arg.__contains__("landau="):
-            landau = int(arg.replace("landau=", ""))
+            landau = float(arg.replace("landau=", ""))
 
         elif arg.__contains__("iterations_num="):
             iterations_num = int(arg.replace("iterations_num=", ""))
@@ -69,13 +67,40 @@ if sys.argv[1] == "new":
       
 elif sys.argv[1] == "contune":
     
-    model = lr.Logistic(thetas_source=sys.argv[2])
+    iterations_num = 10000
+    saving_rate = 200
+    
+    for arg in sys.argv[3:]:
+        if arg.__contains__("iterations_num="):
+            iterations_num = int(arg.replace("iterations_num=", ""))
+        
+        elif arg.__contains__("saving_rate="):
+            saving_rate = int(arg.replace("saving_rate=", ""))
 
-    print("thetas: " + str(model.thetas))
-    print("mixing_formats: " + str(model.mixing_formats))
-    print("fet_num: " + str(model.fet_num))
-    print("hypo_level: " + str(model.hypo_level))
-    print("mixing: " + str(model.mixing))
-    print("regularized: " + str(model.regularized))
-    print("alpha: " + str(model.alpha))
-    print("landau: " + str(model.landau))
+
+    module_location = sys.argv[2]
+    module = lr.Logistic()
+    module.load_module(module_location)
+    
+    print(module.thetas)
+    
+    data_location = sys.argv[3]
+    inputs, outputs = get_data(data_location)
+    
+    module.gradient_descent(inputs, outputs, iterations_num, saving_rate)
+    
+    
+elif sys.argv[1] == "test":
+    
+    module_location = sys.argv[2]
+    
+    module = lr.Logistic()
+    module.load_module(module_location)
+    
+    inputs, outputs = get_data(sys.argv[3])
+    
+    score = module.test(inputs, outputs)
+    
+    data_length = len(outputs)
+    print("\n")
+    print(f"Result: {score}%  , {data_length*score/100}/{data_length}")

@@ -1,5 +1,3 @@
-from mimetypes import init
-from operator import mod
 import numpy as np
 import json
 
@@ -39,11 +37,13 @@ class Logistic:
             self.regularized =  bool(information["regularized"])
             self.alpha =        int(information["alpha"])
             self.landau =       int(information["landau"])
+            self.thetas_num = len(self.thetas)
             
             # numerate the thetas #
             for i in range(len(self.thetas)):
                 self.thetas[i] = int(self.thetas[i])
             #  #
+            self.thetas = np.array(self.thetas)
 
     #
     def get_possible_mixing_formats(self, fet_num, level, mixing_string=""):
@@ -132,4 +132,19 @@ class Logistic:
             if iteration % saving_rate == 0:
                 self.save_progress(iteration=iteration)
                 
+        self.save_progress(iteration=iteration)
+                 
+    #
+    def test(self, inputs, outputs):
+        data_length = len(outputs)
+        score = 0
+        
+        for features, y in zip(inputs, outputs):
+            guess = self.predict(features)
+            guess = 1 if guess >= 0.5 else 0
+            
+            if y == guess:
+                score += 1
+                
+        return score * 100 / data_length
 
