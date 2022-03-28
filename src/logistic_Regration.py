@@ -30,7 +30,7 @@ class Logistic:
             information = json.load(f)
 
             self.thetas =       information["thetas"]
-            self.mixing_formats=np.array(information["mixing_formats"])
+            self.mixing_formats=np.array(information["mixing_formats"], dtype=object)
             self.fet_num =      int(information["fet_num"])
             self.hypo_level =   int(information["hypo_level"])
             self.mixing =       bool(information["mixing"])
@@ -81,7 +81,25 @@ class Logistic:
         return 1 / (1 + np.exp(-x))
 
     #
-    def J(self, inputs, outputs, X_format="", landau=0):
+    def J(self, inputs, outputs, landau=0):
+        m = len(outputs)
+
+        regularization = (landau/2*m) * np.sum( [ theta**2 for theta in self.thetas[1:] ] ) if self.regularized else 0
+
+        result = 0
+
+        for features, y in zip(inputs, outputs):
+
+            predicted_value = self.sigmoid(self.predict(features))
+            predicted_value = 0.00000000000001 if predicted_value==0 else predicted_value
+            predicted_value = 0.99999999999999 if predicted_value==1 else predicted_value
+            
+            result += (1/m) * ( y * np.log( predicted_value ) + (1-y)*(np.log( 1-predicted_value )) ) + regularization
+
+        return result
+    
+    #
+    def updating_theta_value(self, inputs, outputs, X_format="", landau=0):
         m = len(outputs)
 
         regularization = (landau/2*m) * np.sum( [ theta**2 for theta in self.thetas[1:] ] ) if self.regularized else 0
@@ -92,12 +110,8 @@ class Logistic:
             value = 1
             for index in X_format:
                 value *= features[int(index)]
-
-            predicted_value = self.sigmoid(self.predict(features))
-            predicted_value = 0.00000000000001 if predicted_value==0 else predicted_value
-            predicted_value = 0.99999999999999 if predicted_value==1 else predicted_value
             
-            result += (1/m) * ( y * np.log( predicted_value ) + (1-y)*(np.log( 1-predicted_value )) ) * value + regularization
+            result += (1/m) * ( self.sigmoid(self.predict(features)) - y ) * value + regularization
 
         return result
     
@@ -110,7 +124,7 @@ class Logistic:
         
         mixing_formats_value = []
         for formate in self.mixing_formats:
-            mixing_formats_value.append(str(formate))
+            mixing_formats_value.append([ index for index in formate])
         
         information = {
             "thetas": thetas_value,
@@ -133,10 +147,10 @@ class Logistic:
             
             temp = []
             
-            temp.append(self.J(inputs, outputs))
+            temp.append(self.updating_theta_value(inputs, outputs))
             
             for format in self.mixing_formats:
-                temp.append(self.J(inputs, outputs, format, self.landau)) 
+                temp.append(self.updating_theta_value(inputs, outputs, format, self.landau)) 
 
             # update the thetas
             for i in range(len(temp)):
