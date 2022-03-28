@@ -13,6 +13,13 @@ class Logistic:
 
         if(not mixing):
             self.thetas_num = fet_num * hypo_level + 1
+            
+            self.mixing_formats = []
+            for i in range(hypo_level):
+                for index in range(fet_num):
+                    self.mixing_formats.append( [str(index) for j in range(i+1)] )
+            self.mixing_formats = np.array(self.mixing_formats, dtype="object")        
+            
         else:
             self.mixing_formats = ""
             for i in range(1, hypo_level+1):
@@ -60,20 +67,17 @@ class Logistic:
     #
     def predict(self, featers):
 
-        if(self.mixing):
-            sum = 0
-            
-            for format_str, theta in zip(self.mixing_formats, self.thetas[1:]):
-                value = 1
-                for index in format_str:
-                    value *= featers[ int(index) ]
-                    
-                sum += value * theta
-                    
-            return sum + self.thetas[0]
+        sum = 0
+        
+        for format_str, theta in zip(self.mixing_formats, self.thetas[1:]):
+            value = 1
+            for index in format_str:
+                value *= featers[ int(index) ]
+                
+            sum += value * theta
+                
+        return sum + self.thetas[0]
 
-        else:
-            return np.sum( [(featers**i) * self.thetas[1:]] for i in range(1, self.hypo_level + 1) ) + self.thetas[0]
             
     #
     def sigmoid(self, x):

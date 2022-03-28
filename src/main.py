@@ -37,7 +37,7 @@ if sys.argv[1] == "new":
     hypo_level = 3
     alpha = 0.001
     landau = 0.01
-    mixing = True
+    mixing = False
     regularized = False
     iterations_num = 1000
     saving_rate = 100
