@@ -34,7 +34,7 @@ if sys.argv[1] == "new":
     
     # load the argv variabels
     data_limit = -1
-    hypo_level = 3
+    hypo_level = 1
     alpha = 0.001
     landau = 0.01
     mixing = False
