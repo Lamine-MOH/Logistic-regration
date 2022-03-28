@@ -102,7 +102,7 @@ class Logistic:
         return result
     
     def save_progress(self, location="data/learned module.json", iteration="", J=""):
-        print("module information Saved " + ("" if iteration=="" else f", iteration: {str(iteration)}") + ",  J value: " + J)
+        print("module information Saved " + ("" if iteration=="" else f", iteration: {str(iteration)}") + ",  J value: " + str(J))
         
         thetas_value = []
         for theta in self.thetas:
