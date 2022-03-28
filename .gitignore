@@ -2,7 +2,7 @@ tempCodeRunnerFile.py
 test.json
 test.py
 src/__pycache__
-data/learned module.json
+data/*.json
 data/original data.csv
-data/
+data/data2
 main.ipynb
