@@ -18,7 +18,7 @@ class Logistic:
             for i in range(1, hypo_level+1):
                 self.mixing_formats += self.get_possible_mixing_formats(fet_num, i)
 
-            self.mixing_formats = np.array(self.mixing_formats[:-1].split("\n"))
+            self.mixing_formats = np.array( [ format[:-1].split(",") for format in self.mixing_formats[:-1].split("\n") ] )
             self.thetas_num = len(self.mixing_formats) + 1 
 
         # create the thetas with random values #
@@ -53,7 +53,7 @@ class Logistic:
         result = ""
         for i in range(fet_num, 0, -1):
             result += self.get_possible_mixing_formats(
-                i, level - 1, mixing_string + str(i-1))
+                i, level - 1, mixing_string + str(i-1) + ",")
 
         return result
 
