@@ -131,16 +131,22 @@ class Logistic:
     def gradient_descent(self, inputs, outputs, iterations_num=1000, saving_rate=200):
         for iteration in range(iterations_num):
             
-            J_value = self.J(inputs, outputs)
-            self.thetas[0] -= self.alpha * J_value
+            temp = []
             
-            for theta_index, format in zip(range(1, self.thetas_num), self.mixing_formats):
-                self.thetas[theta_index] -= self.alpha * self.J(inputs, outputs, format, self.landau) 
+            temp.append(self.J(inputs, outputs))
+            
+            for format in self.mixing_formats:
+                temp.append(self.J(inputs, outputs, format, self.landau)) 
 
-            if iteration % saving_rate == 0:
-                self.save_progress(iteration=iteration, J=J_value)
+            # update the thetas
+            for i in range(len(temp)):
+                self.thetas[i] -= self.alpha * temp[i]
                 
-        self.save_progress(iteration=iteration, J=J_value)
+            # save the module
+            if iteration % saving_rate == 0:
+                self.save_progress(iteration=iteration, J=temp[0])
+                
+        self.save_progress(iteration=iteration, J=temp[0])
                  
     #
     def test(self, inputs, outputs):
