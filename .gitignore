@@ -6,3 +6,5 @@ data/*.json
 data/original data.csv
 data/data2
 main.ipynb
+data/learn data -origin-.csv
+data/test data -origin-.csv
