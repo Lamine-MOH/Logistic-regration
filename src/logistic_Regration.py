@@ -42,8 +42,8 @@ class Logistic:
             self.hypo_level =   int(information["hypo_level"])
             self.mixing =       bool(information["mixing"])
             self.regularized =  bool(information["regularized"])
-            self.alpha =        int(information["alpha"])
-            self.landau =       int(information["landau"])
+            self.alpha =        float(information["alpha"])
+            self.landau =       float(information["landau"])
             self.thetas_num =   len(self.thetas)
             
             # numerate the thetas #
@@ -124,7 +124,7 @@ class Logistic:
         
         thetas_value = []
         for theta in self.thetas:
-            thetas_value.append(int(theta))
+            thetas_value.append(float(theta))
         
         mixing_formats_value = []
         for formate in self.mixing_formats:
