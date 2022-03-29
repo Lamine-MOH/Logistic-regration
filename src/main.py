@@ -170,4 +170,11 @@ elif sys.argv[1] == "test":
     score = module.test(inputs, outputs)
     print("Test complite", end="\n\n")
     
-    print(f"Result: {score}%  , {int(data_length*score/100)}/{data_length}", end="\n\n")
+    total_correct = score['yes_correct'] + score['no_correct']
+    
+    print(f"Result: {total_correct*100/data_length}%  , {total_correct}/{data_length}", end="\n\n")
+    
+    print(f"Number of YES correct: {score['yes_correct']}")
+    print(f"Number of NO correct: {score['no_correct']}")
+    print(f"Number of YES false: {score['yes_false']}")
+    print(f"Number of NO false: {score['no_false']}")

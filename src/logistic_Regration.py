@@ -168,15 +168,26 @@ class Logistic:
                  
     #
     def test(self, inputs, outputs):
-        data_length = len(outputs)
-        score = 0
+        
+        yes_correct = 0
+        yes_false = 0
+        no_correct = 0
+        no_false = 0
         
         for features, y in zip(inputs, outputs):
             guess = self.predict(features)
             guess = 1 if guess >= 0.5 else 0
             
-            if y == guess:
-                score += 1
+            if y == 1:
+                if guess == 1:
+                    yes_correct += 1
+                else:
+                    yes_false += 1
+            else:
+                if guess == 0:
+                    no_correct += 1
+                else:
+                    no_false += 1
                 
-        return score * 100 / data_length
+        return { "yes_correct": yes_correct, "yes_false": yes_false, "no_correct": no_correct, "no_false": no_false }
 
