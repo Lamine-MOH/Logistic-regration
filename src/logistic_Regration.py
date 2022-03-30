@@ -48,7 +48,7 @@ class Logistic:
             
             # numerate the thetas #
             for i in range(len(self.thetas)):
-                self.thetas[i] = int(self.thetas[i])
+                self.thetas[i] = float(self.thetas[i])
             #  #
             self.thetas = np.array(self.thetas)
 
@@ -81,14 +81,14 @@ class Logistic:
             
     #
     def sigmoid(self, x):
-        x = 100 if x>100 else -700 if x<-700 else x
+        x = 100 if x>100 else -100 if x<-100 else x
         return 1 / (1 + np.exp(-x))
 
     #
-    def J(self, inputs, outputs, landau=0):
+    def J(self, inputs, outputs):
         m = len(outputs)
 
-        regularization = (landau/2*m) * np.sum( [ theta**2 for theta in self.thetas[1:] ] ) if self.regularized else 0
+        regularization = (self.landau/2*m) * np.sum( [ theta**2 for theta in self.thetas[1:] ] ) if self.regularized else 0
 
         result = 0
 
@@ -103,10 +103,10 @@ class Logistic:
         return result
     
     #
-    def updating_theta_value(self, inputs, outputs, X_format="", landau=0):
+    def updating_theta_value(self, inputs, outputs, X_format=""):
         m = len(outputs)
 
-        regularization = (landau/2*m) * np.sum( [ theta**2 for theta in self.thetas[1:] ] ) if self.regularized else 0
+        regularization = (self.landau/2*m) * np.sum( [ theta**2 for theta in self.thetas[1:] ] ) if self.regularized else 0
 
         result = 0
 
@@ -154,7 +154,7 @@ class Logistic:
             temp.append(self.updating_theta_value(inputs, outputs))
             
             for format in self.mixing_formats:
-                temp.append(self.updating_theta_value(inputs, outputs, format, self.landau)) 
+                temp.append(self.updating_theta_value(inputs, outputs, format)) 
 
             # update the thetas
             for i in range(len(temp)):
@@ -162,9 +162,9 @@ class Logistic:
                 
             # save the module
             if iteration % saving_rate == 0:
-                self.save_progress(iteration=iteration, J=temp[0])
+                self.save_progress(iteration=iteration, J=self.J(inputs, outputs))
                 
-        self.save_progress(iteration=iteration, J=temp[0])
+        self.save_progress(iteration=iteration, J=self.J(inputs, outputs))
                  
     #
     def test(self, inputs, outputs):
@@ -175,7 +175,7 @@ class Logistic:
         no_false = 0
         
         for features, y in zip(inputs, outputs):
-            guess = self.predict(features)
+            guess = self.sigmoid(self.predict(features))
             guess = 1 if guess >= 0.5 else 0
             
             if y == 1:
