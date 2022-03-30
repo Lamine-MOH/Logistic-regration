@@ -81,7 +81,7 @@ class Logistic:
             
     #
     def sigmoid(self, x):
-        x = 100 if x>100 else -100 if x<-100 else x
+        x = 700 if x>700 else -700 if x<-700 else x
         return 1 / (1 + np.exp(-x))
 
     #
