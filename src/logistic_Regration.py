@@ -144,6 +144,13 @@ class Logistic:
 
         with open(location, "w") as f:
             json.dump(information, f)
+            
+        if iteration == 0:
+            with open("data/j_values.txt", "w") as f:
+                f.write(f"{str(iteration)}, {str(J)} \n")
+        else:
+            with open("data/j_values.txt", "a") as f:
+                f.write(f"{str(iteration)}, {str(J)} \n")
 
     # 
     def gradient_descent(self, inputs, outputs, iterations_num=1000, saving_rate=200):

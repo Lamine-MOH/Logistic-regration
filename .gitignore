@@ -9,3 +9,4 @@ main.ipynb
 data/learn data -origin-.csv
 data/test data -origin-.csv
 command.sh
+data/j_values.txt
