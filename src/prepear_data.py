@@ -95,7 +95,7 @@ def convert_line(line):
     # add the output at the end (HeartDisease)
     if line[0].__contains__("Yes"):
         new_line.append(1)
-    elif line[0].__contains__("NO"):
+    elif line[0].__contains__("No"):
         new_line.append(0)
     #
     
