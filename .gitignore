@@ -10,3 +10,7 @@ data/learn data -origin-.csv
 data/test data -origin-.csv
 command.sh
 data/j_values.txt
+data/learn_data_order.csv
+data/test_data_order.csv
+data/learn_data_order .csv
+data/test_data_order .csv
