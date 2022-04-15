@@ -1,6 +1,6 @@
 import numpy as np
 import json
-
+import os.path
 
 class Logistic:
     def new_module(self, fet_num, hypo_level=1, alpha=0.001, landau=0.2, mixing=False, regularized=False):
@@ -119,9 +119,24 @@ class Logistic:
 
         return result
     
-    def save_progress(self, location="data/learned module.json", iteration="", J=""):
+    def save_progress(self, iteration="", J="", score = 0):
+        # print the iteration state
         print("module information Saved " + ("" if iteration=="" else f", iteration: {str(iteration)}") + ",  J value: " + str(J))
+        print()
         
+        if score != 0:
+            data_length = score['yes_correct']+ score['no_correct']+ score['yes_false']+ score['no_false']
+            total_correct = score['yes_correct'] + score['no_correct']
+            print(f"Score: {total_correct*100/data_length}%  , {total_correct}/{data_length}")
+            print(f"Number of YES correct: {score['yes_correct']}")
+            print(f"Number of NO correct: {score['no_correct']}")
+            print(f"Number of YES false: {score['yes_false']}")
+            print(f"Number of NO false: {score['no_false']}")
+            print()
+            
+        print("---------------------------------------------------------------")
+        
+        # save the module
         thetas_value = []
         for theta in self.thetas:
             thetas_value.append(float(theta))
@@ -142,18 +157,38 @@ class Logistic:
             "J": J
         }
 
-        with open(location, "w") as f:
-            json.dump(information, f)
-            
-        if iteration == 0:
-            with open("data/j_values.txt", "w") as f:
-                f.write(f"{str(iteration)}, {str(J)} \n")
+        if score == 0:
+            with open("result/module.json", "w") as f:
+                json.dump(information, f)
         else:
-            with open("data/j_values.txt", "a") as f:
-                f.write(f"{str(iteration)}, {str(J)} \n")
+            with open(f"result/module ({iteration}).json", "w") as f:
+                json.dump(information, f)
+            
+        # save the module history
+        if os.path.isfile("result/module_history.json"):
+            json_file = open("result/module_history.json", "r", encoding="utf-8")
+            json_data = json.load(json_file)
+            json_file.close()
+        else:
+            json_data = {"module_history": []}
 
+        json_data["module_history"].append( {
+                "iteration": iteration,
+                "J_value": J,
+                "score": f"{total_correct*100/data_length}%",
+                "Number_of_YES_correct" : score['yes_correct'],
+                "Number_of_NO_correct" : score['no_correct'],
+                "Number_of_YES_false" : score['yes_false'],
+                "Number_of_NO_false" : score['no_false'],
+            } )
+        
+        json_file = open("result/module_history.json", "w", encoding="utf-8")
+        json.dump(json_data, json_file)
+        json_file.close()
+            
+        
     # 
-    def gradient_descent(self, inputs, outputs, iterations_num=1000, saving_rate=200):
+    def gradient_descent(self, inputs, outputs, iterations_num=1000, saving_rate=200, test_inputs = [], test_outputs = []):
         for iteration in range(iterations_num):
             
             temp = []
@@ -169,9 +204,9 @@ class Logistic:
                 
             # save the module
             if iteration % saving_rate == 0:
-                self.save_progress(iteration=iteration, J=self.J(inputs, outputs))
+                self.save_progress(iteration=iteration, J=self.J(inputs, outputs), score = self.test(test_inputs, test_outputs))
                 
-        self.save_progress(iteration=iteration, J=self.J(inputs, outputs))
+        self.save_progress(iteration=iteration, J=self.J(inputs, outputs), score = self.test(test_inputs, test_outputs))
                  
     #
     def test(self, inputs, outputs):
