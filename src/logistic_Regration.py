@@ -98,9 +98,9 @@ class Logistic:
             predicted_value = 0.00000000000001 if predicted_value==0 else predicted_value
             predicted_value = 0.99999999999999 if predicted_value==1 else predicted_value
             
-            result += (1/m) * ( y * np.log( predicted_value ) + (1-y)*(np.log( 1-predicted_value )) ) + regularization
+            result += ( y * np.log( predicted_value ) + (1-y)*(np.log( 1-predicted_value )) ) + regularization
 
-        return result
+        return -(1/m) * result
     
     #
     def updating_theta_value(self, inputs, outputs, X_format=""):
