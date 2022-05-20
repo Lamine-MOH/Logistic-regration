@@ -65,14 +65,14 @@ class Logistic:
         return result
 
     #
-    def predict(self, featers):
+    def predict(self, features):
 
         sum = 0
         
         for format_str, theta in zip(self.mixing_formats, self.thetas[1:]):
             value = 1
             for index in format_str:
-                value *= featers[ int(index) ]
+                value *= features[ int(index) ]
                 
             sum += value * theta
                 
